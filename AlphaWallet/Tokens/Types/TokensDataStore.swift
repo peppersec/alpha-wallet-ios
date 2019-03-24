@@ -520,19 +520,19 @@ class TokensDataStore {
 
     func add(deadContracts: [DeletedContract]) {
         try! realm.write {
-            realm.add(deadContracts, update: false)
+            realm.add(deadContracts, update: true)
         }
     }
 
     func add(delegateContracts: [DelegateContract]) {
         try! realm.write {
-            realm.add(delegateContracts, update: false)
+            realm.add(delegateContracts, update: true)
         }
     }
 
     func add(hiddenContracts: [HiddenContract]) {
         try! realm.write {
-            realm.add(hiddenContracts, update: false)
+            realm.add(hiddenContracts, update: true)
         }
     }
 
