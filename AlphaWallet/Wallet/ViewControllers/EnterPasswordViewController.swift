@@ -2,10 +2,9 @@
 
 import UIKit
 import Eureka
-import TrustKeystore
 
 protocol EnterPasswordViewControllerDelegate: class {
-    func didEnterPassword(password: String, for account: Account, in viewController: EnterPasswordViewController)
+    func didEnterPassword(password: String, for account: EthereumAccount, in viewController: EnterPasswordViewController)
 }
 
 class EnterPasswordViewController: FormViewController {
@@ -31,12 +30,12 @@ class EnterPasswordViewController: FormViewController {
         return form.rowBy(tag: Values.confirmPassword) as? TextFloatLabelRow
     }
 
-    private let account: Account
+    private let account: EthereumAccount
 
     weak var delegate: EnterPasswordViewControllerDelegate?
 
     init(
-        account: Account
+        account: EthereumAccount
     ) {
         self.account = account
 

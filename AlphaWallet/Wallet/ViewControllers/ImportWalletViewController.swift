@@ -1,6 +1,8 @@
 // Copyright SIX DAY LLC. All rights reserved.
+
 import UIKit
 import QRCodeReaderViewController
+import TrustKeystore
 
 protocol ImportWalletViewControllerDelegate: class {
     func didImportAccount(account: Wallet, in viewController: ImportWalletViewController)
@@ -246,17 +248,23 @@ class ImportWalletViewController: UIViewController, CanScanQRCode {
 
         displayLoading(text: R.string.localizable.importWalletImportingIndicatorLabelTitle(), animated: false)
 
-        let importType: ImportType = {
+        let importTypeOptional: ImportType? = {
             switch tabBar.tab {
             case .keystore:
                 return .keystore(string: keystoreInput, password: password)
             case .privateKey:
-                return .privateKey(privateKey: privateKeyInput)
+                guard let data = Data(hexString: privateKeyInput) else {
+                    hideLoading(animated: false)
+                    displayError(error: ValidationError(msg: R.string.localizable.importWalletImportInvalidPrivateKey()))
+                    return nil
+                }
+                return .privateKey(privateKey: data)
             case .watch:
                 let address = AlphaWallet.Address(string: watchInput)! // Address validated by form view.
                 return .watch(address: address)
             }
         }()
+        guard let importType = importTypeOptional else { return }
 
         keystore.importWallet(type: importType) { [weak self] result in
             guard let strongSelf = self else { return }

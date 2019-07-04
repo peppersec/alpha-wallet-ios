@@ -1,10 +1,10 @@
 // Copyright SIX DAY LLC. All rights reserved.
 
 import Foundation
-import TrustKeystore
+import UIKit
 
 protocol EnterPasswordCoordinatorDelegate: class {
-    func didEnterPassword(password: String, account: Account, in coordinator: EnterPasswordCoordinator)
+    func didEnterPassword(password: String, account: EthereumAccount, in coordinator: EnterPasswordCoordinator)
     func didCancel(in coordinator: EnterPasswordCoordinator)
 }
 
@@ -15,7 +15,7 @@ class EnterPasswordCoordinator: Coordinator {
         controller.delegate = self
         return controller
     }()
-    private let account: Account
+    private let account: EthereumAccount
 
     let navigationController: UINavigationController
     var coordinators: [Coordinator] = []
@@ -23,7 +23,7 @@ class EnterPasswordCoordinator: Coordinator {
 
     init(
         navigationController: UINavigationController = UINavigationController(),
-        account: Account
+        account: EthereumAccount
     ) {
         self.navigationController = navigationController
         self.account = account
@@ -39,7 +39,7 @@ class EnterPasswordCoordinator: Coordinator {
 }
 
 extension EnterPasswordCoordinator: EnterPasswordViewControllerDelegate {
-    func didEnterPassword(password: String, for account: Account, in viewController: EnterPasswordViewController) {
+    func didEnterPassword(password: String, for account: EthereumAccount, in viewController: EnterPasswordViewController) {
         delegate?.didEnterPassword(password: password, account: account, in: self)
     }
 }

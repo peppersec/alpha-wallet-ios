@@ -3,17 +3,15 @@
 import Foundation
 import UIKit
 import Result
-import TrustKeystore
-import Result
 
 protocol BackupCoordinatorDelegate: class {
     func didCancel(coordinator: BackupCoordinator)
-    func didFinish(account: Account, in coordinator: BackupCoordinator)
+    func didFinish(account: EthereumAccount, in coordinator: BackupCoordinator)
 }
 
 class BackupCoordinator: Coordinator {
     private let keystore: Keystore
-    private let account: Account
+    private let account: EthereumAccount
 
     let navigationController: UINavigationController
     weak var delegate: BackupCoordinatorDelegate?
@@ -22,7 +20,7 @@ class BackupCoordinator: Coordinator {
     init(
         navigationController: UINavigationController,
         keystore: Keystore,
-        account: Account
+        account: EthereumAccount
     ) {
         self.navigationController = navigationController
         self.keystore = keystore
@@ -42,11 +40,11 @@ class BackupCoordinator: Coordinator {
         }
     }
 
-    func presentActivityViewController(for account: Account, password: String, newPassword: String, completion: @escaping (Result<Bool, AnyError>) -> Void) {
+    func presentActivityViewController(for account: EthereumAccount, newPassword: String, completion: @escaping (Result<Bool, AnyError>) -> Void) {
         navigationController.displayLoading(
             text: R.string.localizable.exportPresentBackupOptionsLabelTitle()
         )
-        keystore.export(account: account, password: password, newPassword: newPassword) { [weak self] result in
+        keystore.export(account: account, newPassword: newPassword) { [weak self] result in
             guard let strongSelf = self else { return }
             strongSelf.handleExport(result: result, completion: completion)
         }
@@ -82,14 +80,14 @@ class BackupCoordinator: Coordinator {
         }
     }
 
-    func presentShareActivity(for account: Account, password: String, newPassword: String) {
-        presentActivityViewController(for: account, password: password, newPassword: newPassword) { [weak self] result in
+    func presentShareActivity(for account: EthereumAccount, newPassword: String) {
+        presentActivityViewController(for: account, newPassword: newPassword) { [weak self] result in
             guard let strongSelf = self else { return }
             strongSelf.finish(result: result)
         }
     }
 
-    func export(for account: Account) {
+    func export(for account: EthereumAccount) {
         let coordinator = EnterPasswordCoordinator(account: account)
         coordinator.delegate = self
         coordinator.start()
@@ -104,13 +102,9 @@ extension BackupCoordinator: EnterPasswordCoordinatorDelegate {
         removeCoordinator(coordinator)
     }
 
-    func didEnterPassword(password: String, account: Account, in coordinator: EnterPasswordCoordinator) {
+    func didEnterPassword(password: String, account: EthereumAccount, in coordinator: EnterPasswordCoordinator) {
         coordinator.navigationController.dismiss(animated: true) { [unowned self] in
-            if let currentPassword = self.keystore.getPassword(for: account) {
-                self.presentShareActivity(for: account, password: currentPassword, newPassword: password)
-            } else {
-                self.presentShareActivity(for: account, password: password, newPassword: password)
-            }
+            self.presentShareActivity(for: account, newPassword: password)
         }
         removeCoordinator(coordinator)
     }

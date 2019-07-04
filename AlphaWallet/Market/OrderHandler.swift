@@ -52,7 +52,7 @@ public class OrderHandler {
 
     private let keyStore = try! EtherKeystore()
 
-    func signOrders(orders: [Order], account: Account) throws -> [SignedOrder] {
+    func signOrders(orders: [Order], account: EthereumAccount) throws -> [SignedOrder] {
         var signedOrders = [SignedOrder]()
         var messages = [Data]()
 

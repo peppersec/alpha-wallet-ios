@@ -15,3 +15,9 @@ extension Account {
         )
     }
 }
+
+extension EthereumAccount {
+    static func make(address: AlphaWallet.Address = .make()) -> EthereumAccount {
+        return .init(address: address)
+    }
+}

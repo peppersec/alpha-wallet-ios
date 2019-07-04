@@ -9,14 +9,10 @@ import Result
 class FakeEtherKeystore: EtherKeystore {
     convenience init() {
         let uniqueString = NSUUID().uuidString
-        try! self.init(
-            keychain: KeychainSwift(keyPrefix: "fake" + uniqueString),
-            keyStoreSubfolder: "/" + uniqueString,
-            userDefaults: UserDefaults.test
-        )
+        try! self.init(keychain: KeychainSwift(keyPrefix: "fake" + uniqueString), userDefaults: UserDefaults.test)
     }
 
-    override func createAccount(with password: String, completion: @escaping (Result<Account, KeystoreError>) -> Void) {
-        completion(.success(.make()))
+    override func createAccount() -> EthereumAccount {
+        return .make()
     }
 }

@@ -1,7 +1,6 @@
 // Copyright SIX DAY LLC. All rights reserved.
 
 import Foundation
-import TrustKeystore
 import UIKit
 
 protocol AccountsCoordinatorDelegate: class {
@@ -173,7 +172,7 @@ extension AccountsCoordinator: BackupCoordinatorDelegate {
         removeCoordinator(coordinator)
     }
 
-    func didFinish(account: Account, in coordinator: BackupCoordinator) {
+    func didFinish(account: EthereumAccount, in coordinator: BackupCoordinator) {
         removeCoordinator(coordinator)
     }
 }
